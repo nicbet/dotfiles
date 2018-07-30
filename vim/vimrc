@@ -1,0 +1,381 @@
+"-------------------------------------------------------------------------------- 
+" General Configuration
+"-------------------------------------------------------------------------------- 
+" Use Python3
+let g:pymode_python = 'python3'
+
+" Don't warn about Python3 Deprecations until that is fixed
+if has('python3')
+  silent! python3 1
+endif
+
+set nocompatible      " We're running Vim, not Vi!
+filetype on           " Enable filetype detection
+filetype indent on    " Enable filetype-specific indenting
+filetype plugin on    " Enable filetype-specific plugins
+
+"-------------------------------------------------------------------------------- 
+" User Interface, Syntax Highlighting and Color Scheme
+"-------------------------------------------------------------------------------- 
+
+" Show Line Numbers
+set number
+
+" Enable Syntax Highlighting
+syntax enable
+
+" Don't syntax highlight lines longer than 200 chars
+set synmaxcol=200
+
+" We are using iTerm2 which has True Color support, turn it on
+set termguicolors
+set t_Co=256
+
+" Tell VIM we are using a dark background
+set background=dark
+
+" Use Molokai scheme
+colorscheme molokai
+
+" Use the darker variant of the Molokai scheme
+let g:rehash256 = 1
+
+" Highlight the current cursor line
+set cursorline
+
+" Allow use of Mouse (I know, SACRILEGE!)
+set mouse=a
+
+" Hide the mouse cursor when characters are typed
+set mousehide
+
+" Always split to the right or below
+set splitright
+set splitbelow
+
+" Wrap long lines
+set wrap!
+
+" Options for when we use a GUI
+if has("gui_running")
+  set guifont=Meslo\ LG\ M\ for\ Powerline:h15
+  set lines=999 columns=999
+  " No menus and no toolbar
+  set guioptions-=m
+  set guioptions-=T
+endif
+
+" Improve vim's scrolling speed
+set ttyfast
+if has('vim') " does not work in nvim
+  set ttyscroll=3
+endif
+
+set lazyredraw
+
+" keep a 5 line padding when moving the cursor
+set scrolloff=5 
+
+
+"-------------------------------------------------------------------------------- 
+" Quality of Life
+"-------------------------------------------------------------------------------- 
+
+" Autosave files when exiting insert mode
+set autowriteall
+
+" Yanks go to the OS Clipboard
+set clipboard=unnamed
+
+" Set default encoding for files to UTF-8
+set encoding=utf-8
+set fileencoding=utf-8
+
+" Insert spaces instead of tabs when <TAB> is pressed
+set expandtab
+
+" Number of space a <TAB> counts for shall be 2
+set tabstop=2
+
+" Allow virtual editing (cursor can be positioned where there is no character)
+" in Visual Block Mode
+set virtualedit=block
+
+" Automatically use 'g' flag with :s/foo/bar
+set gdefault
+
+" Allow Magic Patterns (Extended Regular Expressions)
+set magic
+
+" Persistent Undo if Supported (Can undo even after closing buffer/vim)
+try
+  set undodir=~/.vim_runtime/temp_dirs/undodir
+  set undofile
+catch
+endtry
+
+" Make Backspace behave like other programs
+set backspace=indent,eol,start
+
+" Automagically indent things when pressing <ENTER>
+set autoindent
+
+" do smart indenting when starting a new line
+set smartindent
+
+" Show trailing whitespace and spaces before a tab:
+:highlight ExtraWhitespace ctermbg=red guibg=red
+:autocmd Syntax * syn match ExtraWhitespace /\s\+$\| \+\ze\\t/
+
+" Searching
+set hlsearch
+
+" Search incrementally as you type
+set incsearch
+
+" If type in CamelCase will use that, otherwise be case insensitive
+set smartcase
+
+" Use The Silver Searcher if available
+if executable('ag')
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
+
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+
+  " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
+
+" Automatically reload the .vimrc file when you save it
+au BufWritePost vimrc so $MYVIMRC
+
+" Use only 1 space after "." when joining lines instead of 2
+set nojoinspaces
+
+" Don't reset cursor to start of line when moving around
+set nostartofline
+
+set wildmenu                    " show completion on the mode-line
+set linespace=0                 " number of pixels between the lines
+set wrap                        " wrap long lines
+set linebreak                   " break lines at word end
+set nobackup                    " don't want no backup files
+set nowritebackup               " don't make a backup before overwriting a file
+set noswapfile                  " no swap files
+set vb                          " disable alert sound
+set showcmd                     " display incomplete commands
+set history=100                 " a ton of history
+
+" Lines with equal indent form a fold.
+set foldmethod=indent
+set foldlevel=1
+set foldnestmax=10
+" Open all folds by default
+set nofoldenable
+
+"-------------------------------------------------------------------------------- 
+" Keyboard
+"-------------------------------------------------------------------------------- 
+
+" Time out on key codes but not mappings
+set notimeout
+set ttimeout
+set ttimeoutlen=100
+
+" Set Leader Key to <SPACE>
+let mapleader = ','
+let maplocalleader = ','
+
+" Tab completion
+set wildmode=list:longest,list:full
+set wildignore+=*.o,*.obj,.git,*.rbc,*.class,.svn,vendor/gems/*
+
+" EasyMotion: <Leader>w {char}{char} to move to {char}{char}
+nmap <Leader>w <Plug>(easymotion-overwin-f2)
+
+" Emmet Ctrl+E Expand Abbrev
+let g:user_emmet_leader_key='<Leader>'
+
+" Use Ctrl+c to close a buffer and move to the next
+nnoremap <C-c> :bnext\|bdelete #<CR>
+
+" EasyAlign
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+" Make UltiSnips play nice with Completion
+let g:UltiSnipsExpandTrigger="<c-tab>"
+let g:UltiSnipsJumpForwardTrigger="<c-tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:ulti_expand_or_jump_res = 0
+function! CleverTab()"{{{
+    call UltiSnips#ExpandSnippetOrJump()
+    if g:ulti_expand_or_jump_res
+        return ""
+    else
+        if pumvisible()
+            return "\<c-n>"
+        else
+            return "\<tab>"
+        endif
+    endif
+endfunction"}}}
+inoremap <silent> <tab> <c-r>=CleverTab()<cr>
+snoremap <silent> <tab> <esc>:call UltiSnips#ExpandSnippetOrJump()<cr>
+
+" Use CMD+ALT+Arrow Keys to navigate buffers
+if has('gui')
+    nnoremap <D-A-Left> :bp<CR>
+    vnoremap <D-A-Left> :bp<CR>
+    inoremap <D-A-Left> :bp<CR>
+    nnoremap <D-A-Right> :bn<CR>
+    vnoremap <D-A-Right> :bn<CR>
+    inoremap <D-A-Right> :bn<CR>
+endif
+
+" If we are in VimR (which uses Tabs)
+if has('gui_vimr')
+    nnoremap <D-A-Left> :bp<CR>
+    vnoremap <D-A-Left> :bp<CR>
+    inoremap <D-A-Left> :bp<CR>
+    nnoremap <D-A-Right> :bn<CR>
+    vnoremap <D-A-Right> :bn<CR>
+    inoremap <D-A-Right> :bn<CR>
+    " nnoremap <D-A-Left> :tabp<CR>
+    " vnoremap <D-A-Left> :tabp<CR>
+    " inoremap <D-A-Left> :tabp<CR>
+    " nnoremap <D-A-Right> :tabn<CR>
+    " vnoremap <D-A-Right> :tabn<CR>
+    " inoremap <D-A-Right> :tabn<CR>
+endif
+
+"-------------------------------------------------------------------------------- 
+" vim-airline
+"-------------------------------------------------------------------------------- 
+
+" Automatically displays all buffers when there's only one tab open.
+let g:airline#extensions#tabline#enabled = 1
+
+" Use Powerline Fonts
+let g:airline_powerline_fonts = 1
+
+"-------------------------------------------------------------------------------- 
+" vim-ctrl-p
+"-------------------------------------------------------------------------------- 
+
+" Don't set working path to CWD of current file
+let g:ctrlp_working_path_mode = 0
+
+" Use Ripgrep if available
+if executable('rg')
+  set grepprg=rg\ --color=never
+  let g:ctrlp_user_command = 'rg %s --files --color=never --glob ""'
+  let g:ctrlp_use_caching = 0
+endif
+
+" Ignore git directory, swap files and temp files
+set wildignore+=*/.git/*,*/tmp/*,*.swp
+
+
+"-------------------------------------------------------------------------------- 
+" yggdroot-indentLine
+"-------------------------------------------------------------------------------- 
+
+let g:indentLine_char = '⎸'
+
+
+"-------------------------------------------------------------------------------- 
+" Highlight Matching (https://github.com/vimtaku/hl_matchit.vim.git)
+"-------------------------------------------------------------------------------- 
+let g:hl_matchit_enable_on_vim_startup = 1
+
+"-------------------------------------------------------------------------------- 
+" Languages
+"-------------------------------------------------------------------------------- 
+autocmd FileType ruby,eruby let g:rubycomplete_buffer_loading = 1 
+autocmd FileType ruby,eruby let g:rubycomplete_classes_in_global = 1
+autocmd FileType ruby,eruby let g:rubycomplete_rails = 1
+
+
+"-------------------------------------------------------------------------------- 
+" ack.vim
+"-------------------------------------------------------------------------------- 
+" Use Ripgrep if available
+if executable('rg')
+  let g:ackprg = 'rg --vimgrep --no-heading'
+endif
+
+map <Leader><Leader>a :Ack!<Space>
+
+"-------------------------------------------------------------------------------- 
+" fzf.vim
+"-------------------------------------------------------------------------------- 
+nmap <Leader><Leader>b :Buffers<CR>
+nmap <Leader><Leader>f :Files<CR>
+nmap <Leader><Leader>c :Tags<CR>
+nmap <Leader><Leader>t :Find<CR>
+nmap <Leader><Leader>l :Lines<CR>
+
+
+"--------------------------------------------------------------------------------
+" ale.vim
+"--------------------------------------------------------------------------------
+" Enable completion where available.
+let g:ale_completion_enabled = 1
+
+" Custom gutter signs
+let g:ale_sign_error = '✘'
+let g:ale_sign_warning = '●'
+
+" To integrate with Airline, set this. Airline will handle the rest.
+let g:airline#extensions#ale#enabled = 1
+
+" Don't use a highlight for the linter gutter
+highlight clear ALEErrorSign
+highlight clear ALEWarningSign
+
+highlight ALEError ctermbg=none cterm=underline
+highlight ALEWarning ctermbg=none cterm=underline
+
+
+"--------------------------------------------------------------------------------
+" deoplete.vim
+"--------------------------------------------------------------------------------
+" Use deoplete.
+let g:deoplete#enable_at_startup = 1
+
+" Completion Options
+set completeopt=noinsert,menuone,noselect
+
+" suppress the annoying 'match x of y', 'The only match' and 'Pattern not
+" found' messages
+set shortmess+=c
+
+"--------------------------------------------------------------------------------
+" LanguageClient
+"--------------------------------------------------------------------------------
+let g:LanguageClient_serverCommands = {
+  \ 'ruby': ['solargraph', 'stdio']
+\ }
+
+"-------------------------------------------------------------------------------- 
+" Other Commands
+"-------------------------------------------------------------------------------- 
+
+" Use Ripgrep to find files containing a certain term
+" --column: Show column number
+" --line-number: Show line number
+" --no-heading: Do not show file headings in results
+" --fixed-strings: Search term as a literal string
+" --ignore-case: Case insensitive search
+" --no-ignore: Do not respect .gitignore, etc...
+" --hidden: Search hidden files and folders
+" --follow: Follow symlinks
+" --glob: Additional conditions for search (in this case ignore everything in the .git/ folder)
+" --color: Search color options
+command! -bang -nargs=* Find call fzf#vim#grep('rg --column --line-number --no-heading --fixed-strings --ignore-case --hidden --follow --glob "!.git/*" --color "always" '.shellescape(<q-args>), 1, <bang>0)
