@@ -100,3 +100,9 @@
 [submodule "vim/pack/plugins/start/vim-vividchalk"]
 	path = vim/pack/plugins/start/vim-vividchalk
 	url = https://github.com/tpope/vim-vividchalk.git
+[submodule "vim/pack/plugins/start/vim-sleuth"]
+	path = vim/pack/plugins/start/vim-sleuth
+	url = https://github.com/tpope/vim-sleuth.git
+[submodule "vim/pack/plugins/start/vim-coloresque"]
+	path = vim/pack/plugins/start/vim-coloresque
+	url = https://github.com/gko/vim-coloresque.git
